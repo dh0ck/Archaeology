@@ -15,8 +15,8 @@ public class Archaeology implements BurpExtension {
 
     Logging logging = api.logging();
 
-    JPanel panel = ui.createUi();
-    api.userInterface().registerSuiteTab("Archaeology", panel);
+    JPanel mainPanel = ui.createUi();
+    api.userInterface().registerSuiteTab("Archaeology", mainPanel);
     logging.logToOutput("Archaeology successfully loaded.");
   }
 

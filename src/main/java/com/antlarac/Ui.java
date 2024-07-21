@@ -2,9 +2,12 @@ package com.antlarac;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -69,10 +72,31 @@ public class Ui {
     return verticalSplitPane;
   }
 
+  private JPanel createButtonsPanel() {
+    JButton buttonAddNewTab = new JButton("Add New Tab");
+    JButton saveButton = new JButton("Save");
+    JButton loadButton = new JButton("Load");
+    JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+    buttonsPanel.add(buttonAddNewTab);
+    buttonsPanel.add(loadButton);
+    buttonsPanel.add(saveButton);
+    return buttonsPanel;
+  }
 
   public JPanel createUi() {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(createVerticalSplitPane(), BorderLayout.CENTER);
-    return panel;
+//    return panel;
+
+    JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane.addTab("Flow 1", createVerticalSplitPane());
+    tabbedPane.addTab("Flow 2", createVerticalSplitPane());
+
+    JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new BorderLayout());
+    mainPanel.add(createButtonsPanel(), BorderLayout.NORTH);
+    mainPanel.add(tabbedPane, BorderLayout.CENTER);
+    return mainPanel;
   }
 }

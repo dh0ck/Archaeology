@@ -11,6 +11,9 @@
   <component name="ChangeListManager">
     <list default="true" id="387b5631-3140-4f4e-86f6-68277e39741d" name="Changes" comment="Basic UI structure completed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/archaeology_jar/archaeology.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/archaeology_jar/archaeology.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Archaeology.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Archaeology.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Ui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Ui.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +45,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -72,7 +75,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1721493414939</updated>
-      <workItem from="1721493415948" duration="8543000" />
+      <workItem from="1721493415948" duration="11063000" />
     </task>
     <task id="LOCAL-00001" summary="Basic UI structure completed">
       <option name="closed" value="true" />
