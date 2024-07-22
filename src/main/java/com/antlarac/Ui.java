@@ -136,6 +136,8 @@ public class Ui {
     updateFlowSelectorComboBox();
     JButton moveSelectedToFlow = new JButton("Move Selected to Flow");
 
+    JButton setSelectedToActiveFlow = new JButton("Set selected Flow as active");
+
     JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
     buttonsPanel.add(buttonAddNewTab);
@@ -144,6 +146,7 @@ public class Ui {
     buttonsPanel.add(loadButton);
     buttonsPanel.add(saveButton);
     buttonsPanel.add(moveSelectedToFlow);
+    buttonsPanel.add(setSelectedToActiveFlow);
     buttonsPanel.add(this.flowSelector);
     return buttonsPanel;
   }
