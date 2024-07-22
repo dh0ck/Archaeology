@@ -140,6 +140,7 @@ public class Ui {
 
     JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
+    // test
     buttonsPanel.add(buttonAddNewTab);
     buttonsPanel.add(buttonDeleteTab);
     buttonsPanel.add(buttonCreateFullHistoryTab);
