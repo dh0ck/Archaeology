@@ -5,6 +5,7 @@ import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import java.util.List;
 
 public class Logic {
+    //test
 
     public List<ProxyHttpRequestResponse> getFullHistory(MontoyaApi api) {
         return api.proxy().history();
