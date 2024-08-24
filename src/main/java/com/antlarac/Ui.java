@@ -6,6 +6,7 @@ import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -19,15 +20,17 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import com.antlarac.Database.*;
 
 public class Ui {
   JTabbedPane tabbedPane;
   Logic logic = new Logic();
+  Database db = new Database();
   private final MontoyaApi api;
   private final Logging logging;
   JComboBox<String> flowSelector = new JComboBox<>();
 
-  public Ui(MontoyaApi api, Logging logging) {
+  public Ui(MontoyaApi api, Logging logging) throws ClassNotFoundException, SQLException {
     this.api = api;
     this.logging = logging;
   }
@@ -140,6 +143,8 @@ public class Ui {
 
     JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
+    JButton createDB = new JButton("Create DB");
+//    createDB.addActionListener(e -> Database());
     // test
     buttonsPanel.add(buttonAddNewTab);
     buttonsPanel.add(buttonDeleteTab);

@@ -9,10 +9,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="387b5631-3140-4f4e-86f6-68277e39741d" name="Changes" comment="Basic UI structure completed">
+    <list default="true" id="387b5631-3140-4f4e-86f6-68277e39741d" name="Changes" comment="test change">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/archaeology.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/archaeology.sqlite" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Database.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/archaeology_jar/archaeology.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/archaeology_jar/archaeology.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/archaeology_jar/archaeology.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Archaeology.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Archaeology.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Logic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Logic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Ui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Ui.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -30,9 +37,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
 }]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2jWCObEXlHa0SFXQY3OaNsGaPC0" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -43,27 +54,58 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.Main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/alara/Documents/Burp_extensions/archaeology",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.31370744",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ],
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect": [
+      "SQLite"
+    ]
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.antlarac.Main" />
+      <module name="archaeology" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.antlarac.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.419" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.419" />
       </set>
     </attachedChunks>
   </component>
@@ -76,6 +118,13 @@
       <option name="presentableId" value="Default" />
       <updated>1721493414939</updated>
       <workItem from="1721493415948" duration="11063000" />
+      <workItem from="1721673715724" duration="572000" />
+      <workItem from="1721738485943" duration="31000" />
+      <workItem from="1721738536607" duration="605000" />
+      <workItem from="1721832726823" duration="3273000" />
+      <workItem from="1721846951570" duration="5595000" />
+      <workItem from="1722865198940" duration="191000" />
+      <workItem from="1724449562048" duration="3957000" />
     </task>
     <task id="LOCAL-00001" summary="Basic UI structure completed">
       <option name="closed" value="true" />
@@ -85,7 +134,39 @@
       <option name="project" value="LOCAL" />
       <updated>1721555983571</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added combobox selector and function to update it.">
+      <option name="closed" value="true" />
+      <created>1721673240175</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1721673240175</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added button to set selected flow as active">
+      <option name="closed" value="true" />
+      <created>1721673803662</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1721673803662</updated>
+    </task>
+    <task id="LOCAL-00004" summary="test change">
+      <option name="closed" value="true" />
+      <created>1721674109722</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1721674109722</updated>
+    </task>
+    <task id="LOCAL-00005" summary="test change">
+      <option name="closed" value="true" />
+      <created>1721935350202</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721935350202</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -103,7 +184,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Basic UI structure completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Basic UI structure completed" />
+    <MESSAGE value="Added combobox selector and function to update it." />
+    <MESSAGE value="Added button to set selected flow as active" />
+    <MESSAGE value="test change" />
+    <option name="LAST_COMMIT_MESSAGE" value="test change" />
   </component>
 </project>
