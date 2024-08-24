@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class Main {
 
   public static void main(String[] args) throws SQLException, ClassNotFoundException {
-    System.out.println("Hello world!");
+    System.out.println("Archaeology loaded.");
     Database database = new Database();
 
   }

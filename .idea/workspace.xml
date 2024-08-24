@@ -9,18 +9,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="387b5631-3140-4f4e-86f6-68277e39741d" name="Changes" comment="test change">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/archaeology.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/archaeology.sqlite" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Database.java" afterDir="false" />
+    <list default="true" id="387b5631-3140-4f4e-86f6-68277e39741d" name="Changes" comment="db connection now works">
+      <change afterPath="$PROJECT_DIR$/.idea/sqlDataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/archaeology_jar/archaeology.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Archaeology.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Archaeology.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Logic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Logic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/archaeology.db" beforeDir="false" afterPath="$PROJECT_DIR$/archaeology.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Database.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/antlarac/Ui.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antlarac/Ui.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,10 +33,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -52,35 +48,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Application.Main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/alara/Documents/Burp_extensions/archaeology",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.31370744",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/alara/Documents/Burp_extensions/archaeology&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.31370744&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ],
-    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect": [
-      "SQLite"
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;SQLite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.antlarac.Main" />
@@ -124,7 +120,7 @@
       <workItem from="1721832726823" duration="3273000" />
       <workItem from="1721846951570" duration="5595000" />
       <workItem from="1722865198940" duration="191000" />
-      <workItem from="1724449562048" duration="3957000" />
+      <workItem from="1724449562048" duration="4853000" />
     </task>
     <task id="LOCAL-00001" summary="Basic UI structure completed">
       <option name="closed" value="true" />
@@ -166,7 +162,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721935350202</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="db connection now works">
+      <option name="closed" value="true" />
+      <created>1724488605477</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1724488605477</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,6 +193,7 @@
     <MESSAGE value="Added combobox selector and function to update it." />
     <MESSAGE value="Added button to set selected flow as active" />
     <MESSAGE value="test change" />
-    <option name="LAST_COMMIT_MESSAGE" value="test change" />
+    <MESSAGE value="db connection now works" />
+    <option name="LAST_COMMIT_MESSAGE" value="db connection now works" />
   </component>
 </project>
