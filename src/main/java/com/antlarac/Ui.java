@@ -20,19 +20,22 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.crypto.Data;
+
 import com.antlarac.Database.*;
 
 public class Ui {
-  JTabbedPane tabbedPane;
-  Logic logic = new Logic();
-  Database db = new Database();
   private final MontoyaApi api;
+  JTabbedPane tabbedPane;
   private final Logging logging;
   JComboBox<String> flowSelector = new JComboBox<>();
+  Logic logic = new Logic();
 
   public Ui(MontoyaApi api, Logging logging) throws ClassNotFoundException, SQLException {
     this.api = api;
     this.logging = logging;
+//    Database database = new Database();
+//    Database database = new Database(this.api);
   }
 
   private DefaultTableModel createTableModel() {

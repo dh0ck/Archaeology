@@ -1,9 +1,10 @@
 package com.antlarac;
 
+import burp.api.montoya.logging.Logging;
+
+import java.io.PrintStream;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-
-import static java.lang.Class.forName;
 
 public class Database {
 
@@ -55,38 +56,103 @@ public class Database {
         pstmt.setString(14, cookies);
         pstmt.setString(15, dateTime);
         pstmt.setInt(16, port);
-//        stmt.execute(String.format("INSERT INTO history(host, method, url, params, edited, statusCode, length, mimeType, extension, title, notes, tls, ip, cookies, dateTime, port) VALUES (%s, %s, %s, %s, %b, %d, %d, %s, %s, %s, %s, %b, %s, %s %s, %d);",host, method, url, params, edited, statusCode, length, mimeType, extension, title, notes, tls, ip, cookies, dateTime, port)
 //        );
-pstmt.executeUpdate();
+        pstmt.executeUpdate();
 
         stmt.close();
     }
 
+//    public Database(MontoyaApi api) throws SQLException, ClassNotFoundException {
     public Database() throws SQLException, ClassNotFoundException {
         // uncomment next line for running in IDE, commont for loading in Burp
         Class.forName("org.sqlite.JDBC");
-        System.getProperty("java.class.path");
+        System.out.println("db");
         String url = "jdbc:sqlite:archaeology.db";
 
-        Connection conn = DriverManager.getConnection(url);
+        Logging logging = new Logging() {
+            @Override
+            public PrintStream output() {
+                return null;
+            }
 
-        try {
-            this.createHistoryTable(conn, url);
-        } catch (SQLException e) {
-            System.out.println("Couldn't create history table");
+            @Override
+            public PrintStream error() {
+                return null;
+            }
+
+            @Override
+            public void logToOutput(String message) {
+
+            }
+
+            @Override
+            public void logToError(String message) {
+
+            }
+
+            @Override
+            public void logToError(String message, Throwable cause) {
+
+            }
+
+            @Override
+            public void logToError(Throwable cause) {
+
+            }
+
+            @Override
+            public void raiseDebugEvent(String message) {
+
+            }
+
+            @Override
+            public void raiseInfoEvent(String message) {
+
+            }
+
+            @Override
+            public void raiseErrorEvent(String message) {
+
+            }
+
+            @Override
+            public void raiseCriticalEvent(String message) {
+
+            }
+        };
+
+
+        Connection conn = DriverManager.getConnection(url);
+        DatabaseMetaData metadata = conn.getMetaData();
+        ResultSet tables = metadata.getTables(null, null, "history", null);
+        if (!tables.next()) {
+//            System.out.println("Creating history table...");
+            logging.logToOutput("Creating history table...");
+            try {
+                this.createHistoryTable(conn, url);
+                logging.logToOutput("History table created correctly.");
+//                System.out.println("History table created correctly.");
+
+            } catch (SQLException e) {
+                logging.logToError("Couldn't create history table created.");
+//                System.out.println("Couldn't create history table created.");
+//                log.error("Couldn't create history table.");
+            }
+        } else {
+//            log.info("History table already exists.");
+            logging.logToOutput("History table already exists.");
+//            System.out.println("History table already exists.");
         }
 
         try {
-            System.out.println("start insert line");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             String ts = sdf.format(timestamp);
 
             this.insertHistoryLine(conn, "http://darkreader.org", "GET", "/blog/posts.json", "?test=1", true, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", ts, 8080);
-            System.out.println("stop insert line");
         } catch (SQLException e) {
-            System.out.println("Couldn't insert history line");
-            e.printStackTrace();
+            logging.logToOutput("Couldn't insert history line");
+//            System.out.println("Couldn't insert history line");
         }
         conn.close();
     }
