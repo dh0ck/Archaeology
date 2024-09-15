@@ -15,7 +15,7 @@ public class Archaeology implements BurpExtension {
 
   @Override
   public void initialize(MontoyaApi api){
-    Logic logic = new Logic();
+//    Logic logic = new Logic();
       try {
           Database database = new Database();
 //        Database database = new Database(api);
@@ -25,8 +25,8 @@ public class Archaeology implements BurpExtension {
           throw new RuntimeException(e);
       }
 
-      List<ProxyHttpRequestResponse> history = logic.getFullHistory(api);
-    System.out.println(history);
+//      List<ProxyHttpRequestResponse> history = logic.getFullHistory(api);
+//    System.out.println(history);
     Logging logging = api.logging();
     Ui ui = null;
     try {
@@ -35,12 +35,9 @@ public class Archaeology implements BurpExtension {
     } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
-      JPanel mainPanel = ui.createUi();
+    JPanel mainPanel = ui.createUi();
     api.userInterface().registerSuiteTab("Archaeology", mainPanel);
 
-    logging.logToOutput(String.valueOf(history.size()));
-//    logging.logToOutput(history.get(7).request().toString());
-//    logging.logToOutput(history.get(7).response().toString());
     logging.logToOutput("Archaeology successfully loaded.");
   }
 

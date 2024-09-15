@@ -1,11 +1,16 @@
 package com.antlarac;
 
 import burp.api.montoya.MontoyaApi;
+import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.logging.Logging;
+import burp.api.montoya.proxy.Proxy;
 import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.http.HttpHeaders;
 import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -29,11 +34,12 @@ public class Ui {
   JTabbedPane tabbedPane;
   private final Logging logging;
   JComboBox<String> flowSelector = new JComboBox<>();
-  Logic logic = new Logic();
+  Logic logic;
 
   public Ui(MontoyaApi api, Logging logging) throws ClassNotFoundException, SQLException {
     this.api = api;
     this.logging = logging;
+    this.logic = new Logic(this.logging);
 //    Database database = new Database();
 //    Database database = new Database(this.api);
   }
@@ -52,9 +58,27 @@ public class Ui {
     return tableModel;
   }
 
-  private JTable createHistoryTable(List<ProxyHttpRequestResponse> historyList) {
+  private List<String> generateTextForRequestOrResponse(ProxyHttpRequestResponse requestResponse) {
+    StringBuilder textRequest = new StringBuilder();
+    List<HttpHeader> requestHeaders = requestResponse.request().headers();
+    for (HttpHeader header : requestHeaders) {
+      textRequest.append(header.name()).append(": ").append(header.value()).append("\n");
+    }
+    textRequest.append("\n").append(requestResponse.request().body().toString());
+
+    StringBuilder textResponse = new StringBuilder();
+    List<HttpHeader> responseHeaders = requestResponse.response().headers();
+    for (HttpHeader header : responseHeaders) {
+      textResponse.append(header.name()).append(": ").append(header.value()).append("\n");
+    }
+    textResponse.append("\n").append(requestResponse.response().body().toString());
+
+    return List.of(textRequest.toString(), textResponse.toString());
+  }
+
+  private JTable createHistoryTable(List<ProxyHttpRequestResponse> historyList, JSplitPane horizontalSplitPane) {
     DefaultTableModel tableModel = createTableModel();
-    logging.logToOutput("full history");
+    logging.logToOutput("Creating history table...");
     int number = 0;
     for (ProxyHttpRequestResponse requestResponseObject : historyList) {
       number++;
@@ -71,26 +95,38 @@ public class Ui {
     JTable historyTable = new JTable(tableModel);
     historyTable.setMinimumSize(new Dimension(100, 100));
 
+    historyTable.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        int row = historyTable.rowAtPoint(e.getPoint());
+        JScrollPane leftScrollPane = (JScrollPane) horizontalSplitPane.getLeftComponent();
+        JTextArea leftTextArea = (JTextArea) leftScrollPane.getViewport().getView();
+        String requestText = generateTextForRequestOrResponse(historyList.get(row)).get(0);
+        leftTextArea.setText(requestText);
+
+        JScrollPane rightScrollPane = (JScrollPane) horizontalSplitPane.getRightComponent();
+        JTextArea rightTextArea = (JTextArea) rightScrollPane.getViewport().getView();
+        String responseText = generateTextForRequestOrResponse(historyList.get(row)).get(1);
+        rightTextArea.setText(responseText);
+      }
+    });
+
     return historyTable;
   }
 
-  private JTextArea createRequestTextArea() {
-    JTextArea requestTextArea = new JTextArea();
-
-    return requestTextArea;
-  }
-
-  private JTextArea createResponseTextArea() {
-    JTextArea responseTextArea = new JTextArea();
-
-    return responseTextArea;
+  private JTextArea createTextArea() {
+      JTextArea textArea = new JTextArea();
+      textArea.setLineWrap(true);
+      textArea.setWrapStyleWord(true);
+      return textArea;
   }
 
   private JSplitPane createHorizontalSplitPane() {
+
     JSplitPane horizontalSplitPane = new JSplitPane(
         JSplitPane.HORIZONTAL_SPLIT,
-        new JScrollPane(this.createRequestTextArea()),
-        new JScrollPane(createResponseTextArea())
+        new JScrollPane(createTextArea()),
+        new JScrollPane(createTextArea())
     );
     horizontalSplitPane.setContinuousLayout(true);
     horizontalSplitPane.setDividerLocation(1000);
@@ -100,10 +136,14 @@ public class Ui {
   }
 
   private JSplitPane createVerticalSplitPane(List<ProxyHttpRequestResponse> historyList) {
+
+    JSplitPane horizontalSplitPane = createHorizontalSplitPane();
+    JTable historyTable = createHistoryTable(historyList, horizontalSplitPane);
+
     JSplitPane verticalSplitPane = new JSplitPane(
         JSplitPane.VERTICAL_SPLIT,
-        new JScrollPane(createHistoryTable(historyList)),
-        new JScrollPane(createHorizontalSplitPane())
+        new JScrollPane(historyTable),
+        new JScrollPane(horizontalSplitPane)
     );
 
     verticalSplitPane.setContinuousLayout(true);
