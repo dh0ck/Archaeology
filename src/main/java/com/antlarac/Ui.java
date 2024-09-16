@@ -8,10 +8,14 @@ import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.http.HttpHeaders;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -35,12 +39,13 @@ public class Ui {
   private final Logging logging;
   JComboBox<String> flowSelector = new JComboBox<>();
   Logic logic;
+  private Database database;// = new Database();
 
-  public Ui(MontoyaApi api, Logging logging) throws ClassNotFoundException, SQLException {
+  public Ui(MontoyaApi api, Logging logging, Database database) throws ClassNotFoundException, SQLException {
     this.api = api;
     this.logging = logging;
     this.logic = new Logic(this.logging);
-//    Database database = new Database();
+    this.database = database;
 //    Database database = new Database(this.api);
   }
 
@@ -61,6 +66,10 @@ public class Ui {
   private List<String> generateTextForRequestOrResponse(ProxyHttpRequestResponse requestResponse) {
     StringBuilder textRequest = new StringBuilder();
     List<HttpHeader> requestHeaders = requestResponse.request().headers();
+    String method = requestResponse.request().method();
+    String endpoint = requestResponse.request().path();
+    String HTTPVersion = requestResponse.request().httpVersion();
+    textRequest.append(method).append(" ").append(endpoint).append(" ").append(HTTPVersion).append("\n");
     for (HttpHeader header : requestHeaders) {
       textRequest.append(header.name()).append(": ").append(header.value()).append("\n");
     }
@@ -176,6 +185,25 @@ public class Ui {
     buttonDeleteTab.addActionListener(e -> removeCurrentlyActiveTab());
 
     JButton saveButton = new JButton("Save");
+    saveButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        logging.logToOutput("123");
+          Connection conn = null;
+          try {
+              conn = database.connectToDatabase();
+          } catch (SQLException ex) {
+              throw new RuntimeException(ex);
+          }
+
+          try {
+              database.saveTable(conn, database.timestamp(new Timestamp(System.currentTimeMillis())));
+          } catch (SQLException ex) {
+              throw new RuntimeException(ex);
+          }
+          logging.logToOutput("345");
+      }
+    });
 
     JButton loadButton = new JButton("Load");
 

@@ -16,21 +16,21 @@ public class Archaeology implements BurpExtension {
   @Override
   public void initialize(MontoyaApi api){
 //    Logic logic = new Logic();
-      try {
-          Database database = new Database();
-//        Database database = new Database(api);
-      } catch (SQLException e) {
-          throw new RuntimeException(e);
-      } catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-      }
+    try {
+      Database database = new Database();
+    //        Database database = new Database(api);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
 
 //      List<ProxyHttpRequestResponse> history = logic.getFullHistory(api);
 //    System.out.println(history);
     Logging logging = api.logging();
     Ui ui = null;
     try {
-      ui = new Ui(api, logging);
+      ui = new Ui(api, logging, new Database());
       System.out.println("ui");
     } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
