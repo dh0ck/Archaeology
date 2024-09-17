@@ -5,6 +5,8 @@ import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.logging.Logging;
 
 import burp.api.montoya.proxy.ProxyHttpRequestResponse;
+
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JPanel;
@@ -23,6 +25,8 @@ public class Archaeology implements BurpExtension {
       throw new RuntimeException(e);
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
+    } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
     }
 
 //      List<ProxyHttpRequestResponse> history = logic.getFullHistory(api);
@@ -32,7 +36,7 @@ public class Archaeology implements BurpExtension {
     try {
       ui = new Ui(api, logging, new Database());
       System.out.println("ui");
-    } catch (SQLException | ClassNotFoundException e) {
+    } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
       throw new RuntimeException(e);
     }
     JPanel mainPanel = ui.createUi();

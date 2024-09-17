@@ -19,15 +19,7 @@ import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.crypto.Data;
 
@@ -162,6 +154,8 @@ public class Ui {
     return verticalSplitPane;
   }
 
+  private JFileChooser chooser = new JFileChooser();
+
   private void updateFlowSelectorComboBox() {
     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
     if (Objects.isNull(tabbedPane)) {
@@ -214,9 +208,24 @@ public class Ui {
 
     JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-    JButton createDB = new JButton("Create DB");
-//    createDB.addActionListener(e -> Database());
-    // test
+    JTextField dbPath = new JTextField();
+
+    JButton dbPathButton = new JButton("DB Path");
+    dbPathButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int chosenPath = chooser.showOpenDialog(null);
+        if (chosenPath == JFileChooser.APPROVE_OPTION) {
+          dbPath.setText(chooser.getSelectedFile().getAbsolutePath());
+          // TODO: actually apply this path to the DB so that it gets stored there,
+          // and save that path also to some config file for loading it the next time the extension loads
+
+        }
+        logging.logToOutput(String.valueOf(chosenPath));
+      }
+    });
+
     buttonsPanel.add(buttonAddNewTab);
     buttonsPanel.add(buttonDeleteTab);
     buttonsPanel.add(buttonCreateFullHistoryTab);
@@ -225,6 +234,9 @@ public class Ui {
     buttonsPanel.add(moveSelectedToFlow);
     buttonsPanel.add(setSelectedToActiveFlow);
     buttonsPanel.add(this.flowSelector);
+    buttonsPanel.add(new JLabel("| Database: "));
+    buttonsPanel.add(dbPath);
+    buttonsPanel.add(dbPathButton);
     return buttonsPanel;
   }
 

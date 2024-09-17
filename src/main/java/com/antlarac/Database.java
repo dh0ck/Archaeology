@@ -1,13 +1,18 @@
 package com.antlarac;
 
 import burp.api.montoya.logging.Logging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 
 public class Database {
 
+    private static final Logger log = LoggerFactory.getLogger(Database.class);
     Logging logging = new Logging() {
         @Override
         public PrintStream output() {
@@ -85,6 +90,7 @@ public class Database {
     }
 
     public void saveTable(Connection conn, String ts) throws SQLException {
+        logging.logToOutput(currentDirectory);
         logging.logToOutput("heyyxxx");
 //        insertHistoryLine();
         insertHistoryLine(conn, "http://darkreader.xxx", "GET", "/blog/posts.json", "?test=1", true, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", ts, 8080);
@@ -114,14 +120,15 @@ public class Database {
         pstmt.setString(14, cookies);
         pstmt.setString(15, dateTime);
         pstmt.setInt(16, port);
-//        );
         pstmt.executeUpdate();
 
         stmt.close();
     }
 
-    public String url = "jdbc:sqlite:archaeology.db";
-    
+//    private String currentDirectory = getClass().getResource(".").getPath();
+    private String currentDirectory = System.getProperty("user.dir");
+    public String url = "jdbc:sqlite:" + currentDirectory + "/archaeology.db";
+
     public Connection connectToDatabase() throws SQLException {
         return DriverManager.getConnection(url);
     }
@@ -132,7 +139,7 @@ public class Database {
         return ts;
     }
 
-    public Database() throws SQLException, ClassNotFoundException {
+    public Database() throws SQLException, ClassNotFoundException, URISyntaxException {
         Class.forName("org.sqlite.JDBC");
         Connection conn = connectToDatabase();
         DatabaseMetaData metadata = conn.getMetaData();
