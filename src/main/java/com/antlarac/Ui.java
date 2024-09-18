@@ -3,7 +3,6 @@ package com.antlarac;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.logging.Logging;
-import burp.api.montoya.proxy.Proxy;
 import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -12,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.http.HttpHeaders;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -21,9 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
-
-import com.antlarac.Database.*;
+import com.antlarac.UiRenameFlow;
 
 public class Ui {
   private final MontoyaApi api;
@@ -31,14 +27,16 @@ public class Ui {
   private final Logging logging;
   JComboBox<String> flowSelector = new JComboBox<>();
   Logic logic;
-  private Database database;// = new Database();
+  private String activeFlow;
+  private Database database;
+  private final UiRenameFlow uiRenameFlow;
 
-  public Ui(MontoyaApi api, Logging logging, Database database) throws ClassNotFoundException, SQLException {
+  public Ui(MontoyaApi api, Logging logging, Database database, UiRenameFlow uiRenameFlow) throws ClassNotFoundException, SQLException {
     this.api = api;
     this.logging = logging;
     this.logic = new Logic(this.logging);
     this.database = database;
-//    Database database = new Database(this.api);
+    this.uiRenameFlow = uiRenameFlow;
   }
 
   private DefaultTableModel createTableModel() {
@@ -154,7 +152,7 @@ public class Ui {
     return verticalSplitPane;
   }
 
-  private JFileChooser chooser = new JFileChooser();
+  private final JFileChooser chooser = new JFileChooser();
 
   private void updateFlowSelectorComboBox() {
     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -179,6 +177,7 @@ public class Ui {
     buttonDeleteTab.addActionListener(e -> removeCurrentlyActiveTab());
 
     JButton saveButton = new JButton("Save");
+    //TODO poner esto en una funcion externa, como hago en el boton anterior, y todas estas acciones de botones ponerla sen un archivo externo
     saveButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -205,8 +204,14 @@ public class Ui {
     JButton moveSelectedToFlow = new JButton("Move Selected to Flow");
 
     JButton setSelectedToActiveFlow = new JButton("Set selected Flow as active");
+    setSelectedToActiveFlow.addActionListener(new ActionListener() {
 
-    JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        activeFlow = Objects.requireNonNull(flowSelector.getSelectedItem()).toString();
+        logging.logToOutput(activeFlow);
+      }
+    });
 
     JTextField dbPath = new JTextField();
 
@@ -226,6 +231,11 @@ public class Ui {
       }
     });
 
+    JButton renameFlow = new JButton("Rename Flow");
+    renameFlow.addActionListener(e -> renameCurrentFlow());
+
+
+    JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     buttonsPanel.add(buttonAddNewTab);
     buttonsPanel.add(buttonDeleteTab);
     buttonsPanel.add(buttonCreateFullHistoryTab);
@@ -237,19 +247,24 @@ public class Ui {
     buttonsPanel.add(new JLabel("| Database: "));
     buttonsPanel.add(dbPath);
     buttonsPanel.add(dbPathButton);
+    buttonsPanel.add(renameFlow);
     return buttonsPanel;
+  }
+
+  private void renameCurrentFlow() {
+    this.uiRenameFlow.setVisible();
   }
 
   private JTabbedPane createTabbedPane() {
     tabbedPane = new JTabbedPane();
-    tabbedPane.addTab("Flow 1", createVerticalSplitPane(List.of()));
+    tabbedPane.addTab("0 - Flow 1", createVerticalSplitPane(List.of()));
     updateFlowSelectorComboBox();
     return tabbedPane;
   }
 
   private void addTab() {
     int numTabs = tabbedPane.getTabCount();
-    tabbedPane.addTab("New Flow", createVerticalSplitPane(List.of()));
+    tabbedPane.addTab(String.format("%d - New Flow",numTabs), createVerticalSplitPane(List.of()));
     tabbedPane.setSelectedIndex(numTabs);
     updateFlowSelectorComboBox();
   }
@@ -265,7 +280,7 @@ public class Ui {
 
   private void addFullHistoryToNewTab(){
     int numTabs = tabbedPane.getTabCount();
-    tabbedPane.addTab("Full History", createVerticalSplitPane(logic.getFullHistory(this.api)));
+    tabbedPane.addTab(String.format("%d - Full History",numTabs), createVerticalSplitPane(logic.getFullHistory(this.api)));
     tabbedPane.setSelectedIndex(numTabs);
     updateFlowSelectorComboBox();
   }

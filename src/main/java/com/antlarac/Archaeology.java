@@ -34,7 +34,7 @@ public class Archaeology implements BurpExtension {
     Logging logging = api.logging();
     Ui ui = null;
     try {
-      ui = new Ui(api, logging, new Database());
+      ui = new Ui(api, logging, new Database(), new UiRenameFlow());
       System.out.println("ui");
     } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
       throw new RuntimeException(e);
