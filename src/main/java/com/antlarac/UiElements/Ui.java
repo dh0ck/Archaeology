@@ -1,9 +1,12 @@
-package com.antlarac;
+package com.antlarac.UiElements;
 
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.logging.Logging;
 import burp.api.montoya.proxy.ProxyHttpRequestResponse;
+import com.antlarac.Database;
+import com.antlarac.Logic;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -19,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import com.antlarac.UiRenameFlow;
 
 public class Ui {
   private final MontoyaApi api;
@@ -256,7 +258,7 @@ public class Ui {
   }
 
   private JTabbedPane createTabbedPane() {
-    tabbedPane = new JTabbedPane();
+    tabbedPane = SharedTabbedPane.tabbedPane;
     tabbedPane.addTab("0 - Flow 1", createVerticalSplitPane(List.of()));
     updateFlowSelectorComboBox();
     return tabbedPane;
