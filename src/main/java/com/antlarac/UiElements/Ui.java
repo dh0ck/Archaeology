@@ -23,11 +23,14 @@ import java.util.Objects;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import static com.antlarac.UiElements.SharedElements.flowSelector;
+import static com.antlarac.UiElements.SharedElements.updateFlowSelectorComboBox;
+
 public class Ui {
   private final MontoyaApi api;
   JTabbedPane tabbedPane;
   private final Logging logging;
-  JComboBox<String> flowSelector = new JComboBox<>();
+//  JComboBox<String> flowSelector = new JComboBox<>();
   Logic logic;
   private String activeFlow;
   private Database database;
@@ -156,17 +159,18 @@ public class Ui {
 
   private final JFileChooser chooser = new JFileChooser();
 
-  private void updateFlowSelectorComboBox() {
-    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-    if (Objects.isNull(tabbedPane)) {
-      model.addElement("");
-    } else {
-      for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-        model.addElement(tabbedPane.getTitleAt(i));
-      }
-    }
-    this.flowSelector.setModel(model);
-  }
+//  private void updateFlowSelectorComboBox() {
+////    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+//    DefaultComboBoxModel<String> model = SharedElements.model;
+//    if (Objects.isNull(tabbedPane)) {
+//      model.addElement("");
+//    } else {
+//      for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+//        model.addElement(tabbedPane.getTitleAt(i));
+//      }
+//    }
+//    this.flowSelector.setModel(model);
+//  }
 
   private JPanel createButtonsPanel() {
     JButton buttonAddNewTab = new JButton("Add New Tab");
@@ -245,7 +249,7 @@ public class Ui {
     buttonsPanel.add(saveButton);
     buttonsPanel.add(moveSelectedToFlow);
     buttonsPanel.add(setSelectedToActiveFlow);
-    buttonsPanel.add(this.flowSelector);
+    buttonsPanel.add(flowSelector);
     buttonsPanel.add(new JLabel("| Database: "));
     buttonsPanel.add(dbPath);
     buttonsPanel.add(dbPathButton);
@@ -258,7 +262,7 @@ public class Ui {
   }
 
   private JTabbedPane createTabbedPane() {
-    tabbedPane = SharedTabbedPane.tabbedPane;
+    tabbedPane = SharedElements.tabbedPane;
     tabbedPane.addTab("0 - Flow 1", createVerticalSplitPane(List.of()));
     updateFlowSelectorComboBox();
     return tabbedPane;
