@@ -7,16 +7,13 @@ import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import com.antlarac.Database;
 import com.antlarac.Logic;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -30,16 +27,17 @@ public class Ui {
   private final MontoyaApi api;
   JTabbedPane tabbedPane;
   private final Logging logging;
-//  JComboBox<String> flowSelector = new JComboBox<>();
   Logic logic;
   private String activeFlow;
-  private Database database;
+  private Database database = new Database();
   private final UiRenameFlow uiRenameFlow;
+  private final JFileChooser chooser = new JFileChooser();
+  private String highlightColor = "#629fea";
 
-  public Ui(MontoyaApi api, Logging logging, Database database, UiRenameFlow uiRenameFlow) throws ClassNotFoundException, SQLException {
+  public Ui(MontoyaApi api, Logging logging, Database database, Logic logic, UiRenameFlow uiRenameFlow) throws ClassNotFoundException, SQLException, URISyntaxException {
     this.api = api;
     this.logging = logging;
-    this.logic = new Logic(this.logging);
+    this.logic =  logic;
     this.database = database;
     this.uiRenameFlow = uiRenameFlow;
   }
@@ -58,34 +56,91 @@ public class Ui {
     return tableModel;
   }
 
+  private static String getStatusText(int statusCode) {
+    switch (statusCode) {
+      case 200: return "OK";
+      case 201: return "Created";
+      case 204: return "No Content";
+      case 301: return "Moded Permanently";
+      case 304: return "Not Modified";
+      case 400: return "Bad Request";
+      case 401: return "Unauthorized";
+      case 403: return "Forbidden";
+      case 404: return "Not Found";
+      case 500: return "Internal Server Error";
+      // Add more status codes as needed
+      default: return "Unknown Status Code";
+    }
+  }
+
   private List<String> generateTextForRequestOrResponse(ProxyHttpRequestResponse requestResponse) {
     StringBuilder textRequest = new StringBuilder();
     List<HttpHeader> requestHeaders = requestResponse.request().headers();
     String method = requestResponse.request().method();
     String endpoint = requestResponse.request().path();
     String HTTPVersion = requestResponse.request().httpVersion();
-    textRequest.append(method).append(" ").append(endpoint).append(" ").append(HTTPVersion).append("\n");
+    textRequest.append(String.format("<b><font color=%s>", this.highlightColor)).append(method).append(" ").append(endpoint).append(" ").append(HTTPVersion).append("</font></b><br>");
     for (HttpHeader header : requestHeaders) {
-      textRequest.append(header.name()).append(": ").append(header.value()).append("\n");
+      textRequest.append(String.format("<b><font color=%s>", this.highlightColor)).append(header.name()).append(":</font></b> ").append(header.value()).append("<br>");
     }
     textRequest.append("\n").append(requestResponse.request().body().toString());
 
     StringBuilder textResponse = new StringBuilder();
     List<HttpHeader> responseHeaders = requestResponse.response().headers();
+    String responseCode = String.valueOf(requestResponse.response().statusCode());
+    textResponse.append(String.format("<b><font color=%s>", this.highlightColor)).append(responseCode).append(" ").append(getStatusText(requestResponse.response().statusCode())).append("</font></b><br>");
     for (HttpHeader header : responseHeaders) {
-      textResponse.append(header.name()).append(": ").append(header.value()).append("\n");
+      textResponse.append(String.format("<b><font color=%s>", this.highlightColor)).append(header.name()).append(":</font></b> ").append(header.value()).append("<br>");
     }
     textResponse.append("\n").append(requestResponse.response().body().toString());
+    // TODO: the text is not wrapping in the JEditorPanes
+
+    // TODO: HTML responses are being rendered automatically in the response pane. allow for the possibility to render or not
 
     return List.of(textRequest.toString(), textResponse.toString());
   }
 
-  private JTable createHistoryTable(List<ProxyHttpRequestResponse> historyList, JSplitPane horizontalSplitPane) {
+  private void filterHistoryItems() {
+    // TODO: save current table to temporary table
+    //  apply the filter function
+    //  replace the filtered table returned by the filter function (in logic)
+    logging.logToOutput("applying filter");
+  }
+
+  private void filterFileTypes() {
+    // TODO: create mini window to select response codes and filetypes
+  }
+  private JPanel filterPanel() {
+    JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+    JTextField filterTextField = new JTextField(25);
+    JButton filterButton = new JButton("Apply");
+    filterButton.addActionListener(e -> this.filterHistoryItems());
+    JCheckBox checkBoxColumns = new JCheckBox();
+    JCheckBox checkBoxRequest = new JCheckBox();
+    JCheckBox checkBoxResponse = new JCheckBox();
+    JButton buttonAdvancedFilters = new JButton("Advanced filters");
+    buttonAdvancedFilters.addActionListener(e -> filterFileTypes());
+
+    filterPanel.add(new JLabel("Filter: "));
+    filterPanel.add(filterTextField);
+    filterPanel.add(filterButton);
+    filterPanel.add(new JLabel("Apply filter to:    "));
+    filterPanel.add(checkBoxColumns);
+    filterPanel.add(new JLabel("Columns"));
+    filterPanel.add(checkBoxRequest);
+    filterPanel.add(new JLabel("Requests"));
+    filterPanel.add(checkBoxResponse);
+    filterPanel.add(new JLabel("Responses"));
+    filterPanel.add(buttonAdvancedFilters);
+    return filterPanel;
+  }
+  private JSplitPane createHistoryTable(List<ProxyHttpRequestResponse> historyList, JSplitPane horizontalSplitPane) {
     DefaultTableModel tableModel = createTableModel();
-    logging.logToOutput("Creating history table...");
     int number = 0;
     for (ProxyHttpRequestResponse requestResponseObject : historyList) {
       number++;
+      //TODO: find alternative to the following deprecated methods
       String host = requestResponseObject.host();
       String url = requestResponseObject.path();
       int port = requestResponseObject.port();
@@ -104,33 +159,37 @@ public class Ui {
       public void mouseClicked(MouseEvent e) {
         int row = historyTable.rowAtPoint(e.getPoint());
         JScrollPane leftScrollPane = (JScrollPane) horizontalSplitPane.getLeftComponent();
-        JTextArea leftTextArea = (JTextArea) leftScrollPane.getViewport().getView();
+        JEditorPane leftTextArea = (JEditorPane) leftScrollPane.getViewport().getView();
         String requestText = generateTextForRequestOrResponse(historyList.get(row)).get(0);
         leftTextArea.setText(requestText);
 
         JScrollPane rightScrollPane = (JScrollPane) horizontalSplitPane.getRightComponent();
-        JTextArea rightTextArea = (JTextArea) rightScrollPane.getViewport().getView();
+        JEditorPane rightTextArea = (JEditorPane) rightScrollPane.getViewport().getView();
         String responseText = generateTextForRequestOrResponse(historyList.get(row)).get(1);
         rightTextArea.setText(responseText);
       }
     });
+    JPanel filterPanel = this.filterPanel();
+    JSplitPane filterAndTableSplitPane = new JSplitPane(
+            JSplitPane.VERTICAL_SPLIT,
+            filterPanel,
+            new JScrollPane(historyTable)
+    );
 
-    return historyTable;
+    return filterAndTableSplitPane;
   }
 
-  private JTextArea createTextArea() {
-      JTextArea textArea = new JTextArea();
-      textArea.setLineWrap(true);
-      textArea.setWrapStyleWord(true);
-      return textArea;
+  private JEditorPane createEditorPane() {
+    JEditorPane editorPane = new JEditorPane("text/html", "");
+    return editorPane;
   }
 
   private JSplitPane createHorizontalSplitPane() {
 
     JSplitPane horizontalSplitPane = new JSplitPane(
         JSplitPane.HORIZONTAL_SPLIT,
-        new JScrollPane(createTextArea()),
-        new JScrollPane(createTextArea())
+        new JScrollPane(createEditorPane()),
+        new JScrollPane(createEditorPane())
     );
     horizontalSplitPane.setContinuousLayout(true);
     horizontalSplitPane.setDividerLocation(1000);
@@ -142,11 +201,12 @@ public class Ui {
   private JSplitPane createVerticalSplitPane(List<ProxyHttpRequestResponse> historyList) {
 
     JSplitPane horizontalSplitPane = createHorizontalSplitPane();
-    JTable historyTable = createHistoryTable(historyList, horizontalSplitPane);
+    JSplitPane historyTable = createHistoryTable(historyList, horizontalSplitPane);
 
     JSplitPane verticalSplitPane = new JSplitPane(
         JSplitPane.VERTICAL_SPLIT,
-        new JScrollPane(historyTable),
+//        new JScrollPane(historyTable)
+        historyTable,
         new JScrollPane(horizontalSplitPane)
     );
 
@@ -156,21 +216,6 @@ public class Ui {
 
     return verticalSplitPane;
   }
-
-  private final JFileChooser chooser = new JFileChooser();
-
-//  private void updateFlowSelectorComboBox() {
-////    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-//    DefaultComboBoxModel<String> model = SharedElements.model;
-//    if (Objects.isNull(tabbedPane)) {
-//      model.addElement("");
-//    } else {
-//      for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-//        model.addElement(tabbedPane.getTitleAt(i));
-//      }
-//    }
-//    this.flowSelector.setModel(model);
-//  }
 
   private JPanel createButtonsPanel() {
     JButton buttonAddNewTab = new JButton("Add New Tab");
@@ -182,29 +227,17 @@ public class Ui {
     JButton buttonDeleteTab = new JButton("Delete Tab");
     buttonDeleteTab.addActionListener(e -> removeCurrentlyActiveTab());
 
-    JButton saveButton = new JButton("Save");
-    //TODO poner esto en una funcion externa, como hago en el boton anterior, y todas estas acciones de botones ponerla sen un archivo externo
-    saveButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        logging.logToOutput("123");
-          Connection conn = null;
-          try {
-              conn = database.connectToDatabase();
-          } catch (SQLException ex) {
-              throw new RuntimeException(ex);
-          }
+    JButton saveButton = new JButton("Save Current");
+    saveButton.addActionListener(e -> logic.saveCurrentFlow());
 
-          try {
-              database.saveTable(conn, database.timestamp(new Timestamp(System.currentTimeMillis())));
-          } catch (SQLException ex) {
-              throw new RuntimeException(ex);
-          }
-          logging.logToOutput("345");
-      }
-    });
+    JButton saveAllButton = new JButton("Save All");
+    saveAllButton.addActionListener(e -> logic.saveAllFlows());
 
     JButton loadButton = new JButton("Load");
+    loadButton.addActionListener(e -> logic.loadSpecificFlow() );
+
+    JButton loadAllButton = new JButton("Load All");
+    loadAllButton.addActionListener(e -> logic.loadAllFlows());
 
     updateFlowSelectorComboBox();
     JButton moveSelectedToFlow = new JButton("Move Selected to Flow");
@@ -240,20 +273,32 @@ public class Ui {
     JButton renameFlow = new JButton("Rename Flow");
     renameFlow.addActionListener(e -> renameCurrentFlow());
 
+    JLabel separator1 = new JLabel("  -  ");
+    JLabel separator2 = new JLabel("  -  ");
 
     JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     buttonsPanel.add(buttonAddNewTab);
     buttonsPanel.add(buttonDeleteTab);
     buttonsPanel.add(buttonCreateFullHistoryTab);
+
+    buttonsPanel.add(separator1);
+
     buttonsPanel.add(loadButton);
+    buttonsPanel.add(loadAllButton);
     buttonsPanel.add(saveButton);
+    buttonsPanel.add(saveAllButton);
+
+    buttonsPanel.add(separator2);
+
     buttonsPanel.add(moveSelectedToFlow);
     buttonsPanel.add(setSelectedToActiveFlow);
     buttonsPanel.add(flowSelector);
-    buttonsPanel.add(new JLabel("| Database: "));
+    buttonsPanel.add(new JLabel("  -  Database: "));
     buttonsPanel.add(dbPath);
     buttonsPanel.add(dbPathButton);
     buttonsPanel.add(renameFlow);
+
+    // TODO: button to show panel with current database structure and if smth is saved or not
     return buttonsPanel;
   }
 
@@ -261,6 +306,7 @@ public class Ui {
     this.uiRenameFlow.setVisible();
   }
 
+  // TODO: maybe I can simplify this and not crate a local varaible that is later never used
   private JTabbedPane createTabbedPane() {
     tabbedPane = SharedElements.tabbedPane;
     tabbedPane.addTab("0 - Flow 1", createVerticalSplitPane(List.of()));

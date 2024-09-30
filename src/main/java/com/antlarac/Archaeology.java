@@ -21,24 +21,28 @@ public class Archaeology implements BurpExtension {
     try {
       Database database = new Database();
     //        Database database = new Database(api);
-    } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
+
+
 
 //      List<ProxyHttpRequestResponse> history = logic.getFullHistory(api);
 //    System.out.println(history);
     Logging logging = api.logging();
+    Logic logic = new Logic(logging, database);
     Ui ui = null;
     try {
-      ui = new Ui(api, logging, new Database(), new UiRenameFlow());
+      ui = new Ui(api, logging, database, logic, new UiRenameFlow());
+//      ui = new Ui(api, logging, new Database(), new UiRenameFlow());
       System.out.println("ui");
-    } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
+    } catch (SQLException | ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
     JPanel mainPanel = ui.createUi();
     api.userInterface().registerSuiteTab("Archaeology", mainPanel);
 
     logging.logToOutput("Archaeology successfully loaded.");
+    } catch (SQLException | ClassNotFoundException | URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }
