@@ -5,13 +5,22 @@ import com.antlarac.UiElements.SharedElements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 import static com.antlarac.UiElements.SharedElements.tabbedPane;
 
@@ -87,46 +96,67 @@ public class Database {
                 "tls BOOLEAN," +
                 "ip VARCHAR(256)," +
                 "cookies TEXT," +
-                "dateTime VARCHAR(20)," +
+                "dateTime VARCHAR(40)," +
                 "port INTEGER" +
                 ");"
         );
         stmt.close();
     }
 
-    public void saveTable(Connection conn, String ts, boolean all) throws SQLException {
+    public void saveTable(Connection conn, String ts, boolean all) throws SQLException, IOException {
         logging.logToOutput(currentDirectory);
-        logging.logToOutput("heyyxxx");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX[v]");
         if (all) {
-            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-                Component component = SharedElements.tabbedPane.getComponentAt(i);
-                // TODO: these castings seem to not be working
-//                Component component0 = component.
-                JPanel panel = (JPanel) component;
-                Component[] components = panel.getComponents();
-                JSplitPane splitPaneTop = (JSplitPane) components[0];
-                JScrollPane scrollPane = (JScrollPane) splitPaneTop.getLeftComponent();
-                JTable historyTable = (JTable) scrollPane.getViewport().getView();
-
-                for (int j = 0; j < historyTable.getColumnCount(); j++) {
-                    TableColumn column = historyTable.getColumnModel().getColumn(j);
-                    logging.logToOutput("column " + j + ": " + column.getHeaderValue());
-                }
-            }
+//            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+//                Component component = SharedElements.tabbedPane.getComponentAt(i);
+//                // TODO: these castings seem to not be working
+////                Component component0 = component.
+//                JPanel panel = (JPanel) component;
+//                Component[] components = panel.getComponents();
+//                JSplitPane splitPaneTop = (JSplitPane) components[0];
+//                JScrollPane scrollPane = (JScrollPane) splitPaneTop.getLeftComponent();
+//                JTable historyTable = (JTable) scrollPane.getViewport().getView();
+//
+//                for (int j = 0; j < historyTable.getColumnCount(); j++) {
+//                    TableColumn column = historyTable.getColumnModel().getColumn(j);
+//                    logging.logToOutput("column " + j + ": " + column.getHeaderValue());
+//                }
+//            }
         } else {
             // TODO: aqui iria para cuando se guarda solo los datos de la tab seleccionada actualmente
             //  pero no esta guardando nada en el log
             Component component = tabbedPane.getSelectedComponent();
-            logging.logToOutput(component.toString());
-            JPanel panel = (JPanel) component;
-            Component[] components = panel.getComponents();
-            logging.logToOutput("hhhh");
-            logging.logToOutput(components.toString());
+            JSplitPane pane1 = (JSplitPane) component;
+            var pane2 = pane1.getTopComponent();
+            var pane3 = (JSplitPane) pane2;
+            var pane4 = pane3.getLeftComponent();
+            JPanel pane5 = (JPanel) pane4;
+            var pane6 = pane5.getComponents(); // este es para el filtro
 
+            var pane7 = pane3.getRightComponent();
+            var pane8 = (JScrollPane) pane7;
+            var pane9 = pane8.getComponents();
+            var pane10 = (JViewport) pane9[0];
+            var pane11 = pane10.getView();
+            JTable table = (JTable) pane11;
+
+            int[] selectedRows = table.getSelectedRows();
+
+            for (int rowIndex : selectedRows) {
+                TableModel model = table.getModel();
+
+                int index = (int) model.getValueAt(rowIndex, 0);
+                String host = (String) model.getValueAt(rowIndex, 1);
+                String path = (String) model.getValueAt(rowIndex, 2);
+                int port = (int) model.getValueAt(rowIndex, 3);
+                String method = (String) model.getValueAt(rowIndex, 4);
+                boolean edited = (boolean) model.getValueAt(rowIndex, 5);
+                ZonedDateTime dateTime = (ZonedDateTime) model.getValueAt(rowIndex, 6);
+                String date = dateTime.format(formatter);
+
+                insertHistoryLine(conn, host, method, path, "testparams", edited, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", date, port);
+            }
         }
-//        insertHistoryLine();
-        insertHistoryLine(conn, "http://darkreader.xxx", "GET", "/blog/posts.json", "?test=1", true, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", ts, 8080);
-        logging.logToError("asdfasdf");
     }
 
     private void insertHistoryLine(Connection conn, String host, String method, String url, String params, Boolean edited, Integer statusCode, Integer length, String mimeType, String extension, String title, String notes, Boolean tls, String ip, String cookies, String dateTime, Integer port) throws SQLException {
@@ -157,7 +187,6 @@ public class Database {
         stmt.close();
     }
 
-//    private String currentDirectory = getClass().getResource(".").getPath();
     private String currentDirectory = System.getProperty("user.dir");
     public String url = "jdbc:sqlite:" + currentDirectory + "/archaeology.db";
 
@@ -193,7 +222,7 @@ public class Database {
         try {
             String ts = timestamp(new Timestamp(System.currentTimeMillis()));
             logging.logToOutput("Trying to instert history line");
-            this.insertHistoryLine(conn, "http://darkreader.org", "GET", "/blog/posts.json", "?test=1", true, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", ts, 8080);
+            this.insertHistoryLine(conn, "http://darkreader.org", "GET", "/blog/posts.json", "?test=1", true, 200, 4309, "JSON", "json", "title", "notes here", true, "123.234.23.123", "session: 123", ts, 8080);
 //            this.saveTable(conn, ts, false);
         } catch (SQLException e) {
             logging.logToError("Couldn't insert history line");

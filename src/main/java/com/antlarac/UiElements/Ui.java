@@ -57,20 +57,20 @@ public class Ui {
   }
 
   private static String getStatusText(int statusCode) {
-    switch (statusCode) {
-      case 200: return "OK";
-      case 201: return "Created";
-      case 204: return "No Content";
-      case 301: return "Moded Permanently";
-      case 304: return "Not Modified";
-      case 400: return "Bad Request";
-      case 401: return "Unauthorized";
-      case 403: return "Forbidden";
-      case 404: return "Not Found";
-      case 500: return "Internal Server Error";
-      // Add more status codes as needed
-      default: return "Unknown Status Code";
-    }
+      return switch (statusCode) {
+          case 200 -> "OK";
+          case 201 -> "Created";
+          case 204 -> "No Content";
+          case 301 -> "Modified Permanently";
+          case 304 -> "Not Modified";
+          case 400 -> "Bad Request";
+          case 401 -> "Unauthorized";
+          case 403 -> "Forbidden";
+          case 404 -> "Not Found";
+          case 500 -> "Internal Server Error";
+          // Add more status codes as needed
+          default -> "Unknown Status Code";
+      };
   }
 
   private List<String> generateTextForRequestOrResponse(ProxyHttpRequestResponse requestResponse) {
@@ -110,6 +110,7 @@ public class Ui {
   private void filterFileTypes() {
     // TODO: create mini window to select response codes and filetypes
   }
+
   private JPanel filterPanel() {
     JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -135,6 +136,7 @@ public class Ui {
     filterPanel.add(buttonAdvancedFilters);
     return filterPanel;
   }
+
   private JSplitPane createHistoryTable(List<ProxyHttpRequestResponse> historyList, JSplitPane horizontalSplitPane) {
     DefaultTableModel tableModel = createTableModel();
     int number = 0;
@@ -159,11 +161,13 @@ public class Ui {
       public void mouseClicked(MouseEvent e) {
         int row = historyTable.rowAtPoint(e.getPoint());
         JScrollPane leftScrollPane = (JScrollPane) horizontalSplitPane.getLeftComponent();
+//        JTextArea leftTextArea = (JTextArea) leftScrollPane.getViewport().getView();
         JEditorPane leftTextArea = (JEditorPane) leftScrollPane.getViewport().getView();
         String requestText = generateTextForRequestOrResponse(historyList.get(row)).get(0);
         leftTextArea.setText(requestText);
 
         JScrollPane rightScrollPane = (JScrollPane) horizontalSplitPane.getRightComponent();
+//        JTextArea rightTextArea = (JTextArea) rightScrollPane.getViewport().getView();
         JEditorPane rightTextArea = (JEditorPane) rightScrollPane.getViewport().getView();
         String responseText = generateTextForRequestOrResponse(historyList.get(row)).get(1);
         rightTextArea.setText(responseText);
@@ -180,9 +184,28 @@ public class Ui {
   }
 
   private JEditorPane createEditorPane() {
-    JEditorPane editorPane = new JEditorPane("text/html", "");
+//    JEditorPane editorPane = new JEditorPane("text/html", "");
+    JEditorPane editorPane = new JEditorPane("text/html", ""){
+      @Override
+      public boolean getScrollableTracksViewportWidth() {
+        return true;
+      }
+    };
+    editorPane.setEditorKit(new CustomHTMLEditorKit());
     return editorPane;
   }
+
+//  private JTextArea createEditorPane() {
+//    JTextArea editorPane = new JTextArea();
+//    editorPane.setEditable(true);
+//    editorPane.setLineWrap(true);
+//    return editorPane;
+//  }
+
+  //TODO esta fallando toda la parte del text wrap en los editor pane que uso para que se vea el html, he intentado usar
+  // las clases CustomHTMLEditorKit y WrappableParagraphview siguiendo lo que dicen en https://github.com/asilichenko/swing-html-paragraph-wrap/blob/master/src/ua/in/asilichenko/HtmlWrapTest.java
+  // pero no parece que funcione, al hacer resize cuando hay textos largos se va a la mierda. estaria bien probar alguna alternativa
+  // con otro widget mas sencillo. probar el JTextPane o RichTextFX https://www.jairogarciarincon.com/clase/interfaces-de-usuario-con-java-swing/componentes-jeditorpane-y-jtextpane
 
   private JSplitPane createHorizontalSplitPane() {
 
@@ -193,7 +216,7 @@ public class Ui {
     );
     horizontalSplitPane.setContinuousLayout(true);
     horizontalSplitPane.setDividerLocation(1000);
-    horizontalSplitPane.setDividerSize(1);
+    horizontalSplitPane.setDividerSize(2);
 
     return horizontalSplitPane;
   }
@@ -212,7 +235,7 @@ public class Ui {
 
     verticalSplitPane.setContinuousLayout(true);
     verticalSplitPane.setDividerLocation(500);
-    verticalSplitPane.setDividerSize(1);
+    verticalSplitPane.setDividerSize(5);
 
     return verticalSplitPane;
   }

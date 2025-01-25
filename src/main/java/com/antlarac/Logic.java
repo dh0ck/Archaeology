@@ -4,6 +4,7 @@ import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.proxy.ProxyHttpRequestResponse;
 import burp.api.montoya.logging.Logging;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -51,14 +52,21 @@ public class Logic {
 
     public void saveCurrentFlow() {
 
+        logging.logToOutput("1111");
         Connection conn = null;
         try {
+            logging.logToOutput("2222");
             conn = this.database.connectToDatabase();
 
             try {
+                logging.logToOutput("333");
                 database.saveTable(conn, database.timestamp(new Timestamp(System.currentTimeMillis())), false);
+                logging.logToOutput("444");
             } catch (SQLException ex) {
+                logging.logToOutput("555");
                 throw new RuntimeException(ex);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
             // TODO: save a single tab to a table in the DB.
             //  check if the table already exists and offer to append or to clear it
