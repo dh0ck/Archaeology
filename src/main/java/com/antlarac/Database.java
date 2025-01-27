@@ -120,14 +120,19 @@ public class Database {
         var pane10 = (JViewport) pane9[0];
         var pane11 = pane10.getView();
         JTable table = (JTable) pane11;
-        if (full) {
-            table.selectAll();
-            logging.logToOutput("all selected");
-        }
+
+
         // TODO: aqui iria para cuando se guarda solo los datos de la tab seleccionada actualmente
         //  pero no esta guardando nada en el log
 
         int[] selectedRows = table.getSelectedRows();
+        int[] selectedRowsIni = selectedRows;
+
+        if (full) {
+            table.selectAll();
+            logging.logToOutput("all selected");
+            selectedRows = table.getSelectedRows();
+        }
 
         for (int rowIndex : selectedRows) {
             TableModel model = table.getModel();
@@ -146,13 +151,9 @@ public class Database {
 
         if (full) {
             table.clearSelection();
-            // TODO: arreglar esto, hay que seleccionar las que el user selecciono a mano, porque en la fila anterior
-            //  se estan limpiando al haber dado al boton de save full table, que funciona seleccionando todas a saco y guardandolas:
-
-//                for (int index0 = 0; index0 < selectedRows.length; index0++) {
-//                    int index1 = selectedRows[index0];
-//                    table.getSelectionModel().addSelectionInterval(index0, index1);
-//                }
+            for (int row : selectedRowsIni) {
+                    table.getSelectionModel().addSelectionInterval(row, row);
+            }
         }
     }
 
