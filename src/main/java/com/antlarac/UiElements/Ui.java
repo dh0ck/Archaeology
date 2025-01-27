@@ -250,11 +250,14 @@ public class Ui {
     JButton buttonDeleteTab = new JButton("Delete Tab");
     buttonDeleteTab.addActionListener(e -> removeCurrentlyActiveTab());
 
-    JButton saveButton = new JButton("Save Current");
-    saveButton.addActionListener(e -> logic.saveCurrentFlow());
+    JButton saveButton = new JButton("Save current selection");
+    saveButton.addActionListener(e -> logic.saveCurrentFlow(false));
 
-    JButton saveAllButton = new JButton("Save All");
-    saveAllButton.addActionListener(e -> logic.saveAllFlows());
+    JButton saveFullButton = new JButton("Save full table");
+    saveFullButton.addActionListener(e -> logic.saveCurrentFlow(true));
+
+    JButton saveAllTablesButton = new JButton("Save all table");
+    saveAllTablesButton.addActionListener(e -> logic.saveAllFlows());
 
     JButton loadButton = new JButton("Load");
     loadButton.addActionListener(e -> logic.loadSpecificFlow() );
@@ -309,7 +312,8 @@ public class Ui {
     buttonsPanel.add(loadButton);
     buttonsPanel.add(loadAllButton);
     buttonsPanel.add(saveButton);
-    buttonsPanel.add(saveAllButton);
+    buttonsPanel.add(saveFullButton);
+    buttonsPanel.add(saveAllTablesButton);
 
     buttonsPanel.add(separator2);
 

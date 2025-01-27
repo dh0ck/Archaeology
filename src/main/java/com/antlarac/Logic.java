@@ -50,23 +50,16 @@ public class Logic {
         return filteredHistoryList;
     }
 
-    public void saveCurrentFlow() {
+    public void saveCurrentFlow(boolean saveFullTable) {
 
-        logging.logToOutput("1111");
         Connection conn = null;
         try {
-            logging.logToOutput("2222");
             conn = this.database.connectToDatabase();
 
             try {
-                logging.logToOutput("333");
-                database.saveTable(conn, database.timestamp(new Timestamp(System.currentTimeMillis())), false);
-                logging.logToOutput("444");
-            } catch (SQLException ex) {
-                logging.logToOutput("555");
+                database.saveTable(conn, database.timestamp(new Timestamp(System.currentTimeMillis())), saveFullTable);
+            } catch (SQLException | IOException ex) {
                 throw new RuntimeException(ex);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
             // TODO: save a single tab to a table in the DB.
             //  check if the table already exists and offer to append or to clear it

@@ -103,59 +103,56 @@ public class Database {
         stmt.close();
     }
 
-    public void saveTable(Connection conn, String ts, boolean all) throws SQLException, IOException {
+    public void saveTable(Connection conn, String ts, boolean full) throws SQLException, IOException {
         logging.logToOutput(currentDirectory);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX[v]");
-        if (all) {
-//            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-//                Component component = SharedElements.tabbedPane.getComponentAt(i);
-//                // TODO: these castings seem to not be working
-////                Component component0 = component.
-//                JPanel panel = (JPanel) component;
-//                Component[] components = panel.getComponents();
-//                JSplitPane splitPaneTop = (JSplitPane) components[0];
-//                JScrollPane scrollPane = (JScrollPane) splitPaneTop.getLeftComponent();
-//                JTable historyTable = (JTable) scrollPane.getViewport().getView();
-//
-//                for (int j = 0; j < historyTable.getColumnCount(); j++) {
-//                    TableColumn column = historyTable.getColumnModel().getColumn(j);
-//                    logging.logToOutput("column " + j + ": " + column.getHeaderValue());
-//                }
-//            }
-        } else {
-            // TODO: aqui iria para cuando se guarda solo los datos de la tab seleccionada actualmente
-            //  pero no esta guardando nada en el log
-            Component component = tabbedPane.getSelectedComponent();
-            JSplitPane pane1 = (JSplitPane) component;
-            var pane2 = pane1.getTopComponent();
-            var pane3 = (JSplitPane) pane2;
-            var pane4 = pane3.getLeftComponent();
-            JPanel pane5 = (JPanel) pane4;
-            var pane6 = pane5.getComponents(); // este es para el filtro
+        Component component = tabbedPane.getSelectedComponent();
+        JSplitPane pane1 = (JSplitPane) component;
+        var pane2 = pane1.getTopComponent();
+        var pane3 = (JSplitPane) pane2;
+        var pane4 = pane3.getLeftComponent();
+        JPanel pane5 = (JPanel) pane4;
+        var pane6 = pane5.getComponents(); // este es para el filtro
 
-            var pane7 = pane3.getRightComponent();
-            var pane8 = (JScrollPane) pane7;
-            var pane9 = pane8.getComponents();
-            var pane10 = (JViewport) pane9[0];
-            var pane11 = pane10.getView();
-            JTable table = (JTable) pane11;
+        var pane7 = pane3.getRightComponent();
+        var pane8 = (JScrollPane) pane7;
+        var pane9 = pane8.getComponents();
+        var pane10 = (JViewport) pane9[0];
+        var pane11 = pane10.getView();
+        JTable table = (JTable) pane11;
+        if (full) {
+            table.selectAll();
+            logging.logToOutput("all selected");
+        }
+        // TODO: aqui iria para cuando se guarda solo los datos de la tab seleccionada actualmente
+        //  pero no esta guardando nada en el log
 
-            int[] selectedRows = table.getSelectedRows();
+        int[] selectedRows = table.getSelectedRows();
 
-            for (int rowIndex : selectedRows) {
-                TableModel model = table.getModel();
+        for (int rowIndex : selectedRows) {
+            TableModel model = table.getModel();
 
-                int index = (int) model.getValueAt(rowIndex, 0);
-                String host = (String) model.getValueAt(rowIndex, 1);
-                String path = (String) model.getValueAt(rowIndex, 2);
-                int port = (int) model.getValueAt(rowIndex, 3);
-                String method = (String) model.getValueAt(rowIndex, 4);
-                boolean edited = (boolean) model.getValueAt(rowIndex, 5);
-                ZonedDateTime dateTime = (ZonedDateTime) model.getValueAt(rowIndex, 6);
-                String date = dateTime.format(formatter);
-
-                insertHistoryLine(conn, host, method, path, "testparams", edited, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", date, port);
+//                int index = (int) model.getValueAt(rowIndex, 0);
+            String host = (String) model.getValueAt(rowIndex, 1);
+            String path = (String) model.getValueAt(rowIndex, 2);
+            int port = (int) model.getValueAt(rowIndex, 3);
+            String method = (String) model.getValueAt(rowIndex, 4);
+            boolean edited = (boolean) model.getValueAt(rowIndex, 5);
+            ZonedDateTime dateTime = (ZonedDateTime) model.getValueAt(rowIndex, 6);
+            String date = dateTime.format(formatter);
+            // TODO: aclarar que poner en params en lugar de testparams que hay ahora, y en el resto de campos raros
+            insertHistoryLine(conn, host, method, path, "testparams", edited, 200, 4309, "JSON", "json", "title1", "notes here", true, "123.234.23.123", "session: 123", date, port);
             }
+
+        if (full) {
+            table.clearSelection();
+            // TODO: arreglar esto, hay que seleccionar las que el user selecciono a mano, porque en la fila anterior
+            //  se estan limpiando al haber dado al boton de save full table, que funciona seleccionando todas a saco y guardandolas:
+
+//                for (int index0 = 0; index0 < selectedRows.length; index0++) {
+//                    int index1 = selectedRows[index0];
+//                    table.getSelectionModel().addSelectionInterval(index0, index1);
+//                }
         }
     }
 
